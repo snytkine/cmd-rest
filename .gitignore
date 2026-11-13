@@ -44,6 +44,11 @@ target/
 *.pem
 *.p12
 *.jks
+# Apple signing / notarization material and installers (see apple-notarize-steps.md)
+*.p8
+*.cer
+*.certSigningRequest
+*.pkg
 # Self-signed, non-secret SSL test fixtures are intentionally tracked.
 !src/test/resources/ssl/*.pem
 !src/test/resources/ssl/*.p12
