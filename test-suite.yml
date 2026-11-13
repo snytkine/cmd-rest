@@ -1,0 +1,121 @@
+---
+# yaml-language-server: $schema=/Users/dmitrisnytkine/projects/api-tester-cli/src/main/resources/schemas/test-suite-schema.json
+name: "Test Suite for My Application v1.0"
+description: "This test suite covers the basic functionality of My Application version\
+  \ 1.0."
+rest-client:
+  base-url: "https://api.restful-api.dev"
+  connect-timeout: 5000
+  headers:
+    x-api-key: "5a7db420-e745-4456-8903-b458e991ce5d"
+variables:
+  api_base_url: "https://api.restful-api.dev"
+  request_id: "[[${#strings.randomAlphanumeric(12)}]]"
+  collectionName: "cheapmonitors"
+tests:
+- name: "Create Computer Monitor"
+  variables:
+    collectionName: "OK"
+  request:
+    method: "POST"
+    url: "/collections/cheapmonitors/objects"
+    headers:
+      Content-Type: "application/json"
+      Accept: "application/json"
+    body: |
+      {
+        "name": "My ZenBook X13 OLED",
+        "price": 299.99,
+        "description": "A high-end computer.",
+        "manufacturer": "ZenBook",
+        "release_date": "2026-10-28"
+      }
+  assertions:
+  - type: "status_code"
+    expected: 200
+- name: "Objects Test"
+  variables:
+    item1: "Google Pixel 6 Pro"
+    monitor_price: 299.99
+  request:
+    method: "GET"
+    url: "/collections/cheapmonitors/objects"
+    headers:
+      Accept: "application/json"
+  assertions:
+  - type: "status_code"
+    expected: 200
+  - type: "string_contains"
+    path: "response.headers.content-type"
+    expected: "application/json"
+    case_sensitive: true
+  - type: "string_match"
+    path: "response.headers.content-type"
+    expected: "application/json"
+    case_sensitive: true
+  - type: "json_match"
+    path: "response.body.json"
+    expected:
+      type: "file"
+      content: "expected_objects_response.json"
+      ignore:
+      - "timestamp"
+      - "session_id"
+  - type: "json_schema"
+    path: "response.body.json"
+    expected:
+      type: "file"
+      content: "expected_objects_schema.json"
+- name: "Monitors collection test"
+  request:
+    method: "GET"
+    url: "/collections/cheapmonitors/objects"
+    headers:
+      Accept: "application/json"
+  assertions:
+  - type: "status_code"
+    expected: 200
+  - type: "array_size"
+    path: "response.body.json"
+    expected: 2
+  - type: "string_contains"
+    path: "response.body.json.[0].name"
+    expected: "Cable"
+- name: "Get Object 2"
+  skip: "This endpoint not supported in this release"
+  tag: "regression"
+  request:
+    method: "GET"
+    url: "/objects/2"
+    headers:
+      Accept: "application/json"
+      x-api-key: "2c932afb-810c-467d-a654-4dce6f175e30"
+  assertions:
+  - type: "status_code"
+    expected: 200
+- name: "Get Object 1"
+  request:
+    method: "GET"
+    url: "/objects/1"
+    headers:
+      Accept: "application/json"
+      x-api-key: "2c932afb-810c-467d-a654-4dce6f175e30"
+  assertions:
+  - type: "status_code"
+    expected: 200
+- name: "Get Item 10"
+  tag: "regression"
+  variables:
+    year: 2026
+  request:
+    method: "GET"
+    url: "/collections/cheapmonitors/objects/ff8081819d82fab6019e803c976624c0"
+    headers:
+      Content-Type: "application/json"
+      Accept: "application/json"
+  assertions:
+  - type: "status_code"
+    expected: 200
+  - type: "string_match"
+    path: "response.body.json.data.year"
+    expected: "2026"

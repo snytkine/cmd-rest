@@ -107,22 +107,7 @@ The `java.version` property must also target Java 25:
 
 ---
 
-## 4. Correct build command
-
-Always use the full Maven lifecycle, never invoke `native:compile` directly:
-
-```bash
-# correct — runs process-aot then compile-no-fork via lifecycle
-./mvnw -Pnative clean package -DskipTests
-
-# wrong — skips process-aot, AOT initializer is never generated
-./mvnw -Pnative native:compile -DskipTests
-```
-
-Calling `native:compile` directly bypasses the lifecycle and skips `spring-boot:process-aot`,
-which generates the `ApplicationContextInitializer` class that Spring Boot requires at
-native-image startup.
-
+## 4. 2
 The compiled binary is written to `target/cmd-rest`.
 
 ---
